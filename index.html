@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="html">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TradeFlow Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   DESIGN SYSTEM
+══════════════════════════════════════════ */
+:root{
+  --ink:#04070f;
+  --ink2:#070d1c;
+  --ink3:#0b1428;
+  --border:#0e1d33;
+  --border2:#182e4a;
+  --cyan:#00f0ff;
+  --purple:#7c3aed;
+  --orange:#ff5f1f;
+  --gold:#f0b429;
+  --green:#06d6a0;
+  --red:#ff3b5c;
+  --snow:#e6f2ff;
+  --fog:#3a577a;
+  --fog2:#567098;
+  --sans-ar:'Tajawal',sans-serif;
+  --sans-en:'Inter',sans-serif;
+  --sans:var(--sans-ar);
+  --r:14px;
+  --glow:0 0 40px rgba(0,240,255,.18);
+}
+[lang=en]{--sans:var(--sans-en);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--ink);color:var(--snow);
+  font-family:var(--sans);overflow-x:hidden;
+  line-height:1.65;cursor:none;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:var(--ink);}
+::-webkit-scrollbar-thumb{background:var(--purple);border-radius:3px;}
+
+/* ── CURSOR ── */
+#cur,#curR{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;}
+#cur{width:10px;height:10px;background:var(--cyan);mix-blend-mode:screen;transition:transform .12s,background .2s;}
+#curR{width:36px;height:36px;border:1.5px solid rgba(0,240,255,.35);top:0;left:0;transition:width .2s,height .2s,border-color .2s;}
+#cur.h{transform:scale(2.4);background:var(--purple);}
+#curR.h{width:56px;height:56px;border-color:rgba(124,58,237,.6);}
+
+/* ── LANG TOGGLE ── */
+.lang-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 16px;border-radius:99px;
+  border:1px solid var(--border2);background:rgba(255,255,255,.04);
+  color:var(--snow);font-size:13px;font-weight:700;cursor:none;
+  transition:all .25s;letter-spacing:.5px;
+}
+.lang-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+.lang-btn .flag{font-size:16px;}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 56px;transition:all .4s;
+}
+nav.up{
+  background:rgba(4,7,15,.93);backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(0,240,255,.07);padding:13px 56px;
+}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.logo-mark{
+  width:42px;height:42px;border-radius:12px;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+  box-shadow:0 0 28px rgba(0,240,255,.28);
+}
+.logo-text{font-size:20px;font-weight:900;color:var(--snow);}
+.logo-text em{color:var(--cyan);font-style:normal;}
+.nav-links{display:flex;gap:32px;list-style:none;}
+.nav-links a{
+  color:var(--fog2);text-decoration:none;font-size:14px;font-weight:600;
+  transition:color .2s;position:relative;padding-bottom:4px;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:0;right:0;left:0;height:2px;
+  background:var(--cyan);transform:scaleX(0);transform-origin:right;transition:transform .3s;
+}
+.nav-links a:hover{color:var(--cyan);}
+.nav-links a:hover::after{transform:scaleX(1);}
+.nav-r{display:flex;align-items:center;gap:10px;}
+.btn-ghost{
+  padding:9px 22px;border-radius:10px;border:1px solid var(--border2);
+  background:transparent;color:var(--snow);font-family:var(--sans);
+  font-size:14px;font-weight:700;cursor:none;text-decoration:none;
+  transition:all .25s;
+}
+.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan);}
+.btn-fill{
+  padding:9px 22px;border-radius:10px;border:none;
+  background:linear-gradient(135deg,var(--cyan),#009cc2);
+  color:var(--ink);font-family:var(--sans);font-size:14px;font-weight:800;
+  cursor:none;text-decoration:none;transition:all .25s;
+  box-shadow:0 4px 18px rgba(0,240,255,.3);
+}
+.btn-fill:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,240,255,.45);}
+
+/* ── TICKER ── */
+.ticker-row{
+  margin-top:78px;height:38px;overflow:hidden;
+  background:var(--ink2);border-bottom:1px solid var(--border);
+}
+.ticker-inner{
+  display:flex;animation:tick 45s linear infinite;width:max-content;
+}
+.tick-item{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:0 24px;height:38px;font-size:11px;font-weight:700;
+  border-left:1px solid var(--border);white-space:nowrap;
+}
+.tick-sym{color:var(--fog2);}
+.tick-p{color:var(--snow);font-family:monospace;}
+.tick-up{color:var(--green);}
+.tick-dn{color:var(--red);}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:80px 24px 60px;overflow:hidden;
+}
+.hero-bg{position:absolute;inset:0;}
+.hero-radial{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 50%,rgba(124,58,237,.13) 0%,transparent 65%),
+    radial-gradient(ellipse 40% 35% at 15% 75%,rgba(0,240,255,.07) 0%,transparent 60%),
+    radial-gradient(ellipse 35% 30% at 85% 20%,rgba(255,95,31,.06) 0%,transparent 60%);
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,240,255,.028) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,240,255,.028) 1px,transparent 1px);
+  background-size:72px 72px;
+  mask-image:radial-gradient(ellipse 85% 85% at 50% 50%,black 20%,transparent 100%);
+}
+#heroCanvas{position:absolute;inset:0;}
+
+.hero-content{position:relative;z-index:2;}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:7px 18px;border-radius:99px;
+  border:1px solid rgba(0,240,255,.22);background:rgba(0,240,255,.06);
+  color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:1.8px;
+  text-transform:uppercase;margin-bottom:30px;
+  animation:fadeD .7s ease both;
+}
+.pdot{
+  width:6px;height:6px;border-radius:50%;background:var(--cyan);
+  animation:blink 1.8s infinite;
+}
+@keyframes blink{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,240,255,.5)}50%{opacity:.5;box-shadow:0 0 0 6px rgba(0,240,255,0)}}
+
+.hero-h{
+  font-size:clamp(50px,7.5vw,98px);font-weight:900;
+  line-height:1.0;letter-spacing:-3px;margin-bottom:26px;
+  animation:fadeD .7s .1s ease both;
+}
+.grad{
+  background:linear-gradient(135deg,var(--cyan) 0%,var(--purple) 55%,var(--orange) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{
+  font-size:18px;color:var(--fog2);max-width:560px;
+  margin:0 auto 44px;line-height:1.8;
+  animation:fadeD .7s .2s ease both;
+}
+.hero-actions{
+  display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap;
+  animation:fadeD .7s .3s ease both;
+}
+.btn-hero{
+  padding:16px 46px;border-radius:14px;border:none;
+  background:linear-gradient(135deg,var(--cyan),#009cc2);
+  color:var(--ink);font-family:var(--sans);font-size:16px;font-weight:900;
+  cursor:none;text-decoration:none;transition:all .3s;
+  box-shadow:0 6px 28px rgba(0,240,255,.35);display:inline-block;
+}
+.btn-hero:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 12px 44px rgba(0,240,255,.5);}
+.btn-hero2{
+  padding:15px 38px;border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);
+  color:var(--snow);font-family:var(--sans);font-size:16px;font-weight:700;
+  cursor:none;text-decoration:none;transition:all .3s;display:inline-block;
+}
+.btn-hero2:hover{border-color:rgba(0,240,255,.4);background:rgba(0,240,255,.06);}
+
+.hero-stats{
+  display:flex;align-items:center;gap:40px;justify-content:center;
+  margin-top:56px;padding-top:44px;border-top:1px solid var(--border);
+  flex-wrap:wrap;animation:fadeD .7s .4s ease both;
+}
+.snum{font-size:32px;font-weight:900;letter-spacing:-1.5px;}
+.snum em{color:var(--cyan);font-style:normal;}
+.slabel{font-size:12px;color:var(--fog);margin-top:3px;}
+.sdiv{width:1px;height:36px;background:var(--border);}
+@keyframes fadeD{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ FEATURE SHOWCASE (Slides) ══ */
+.showcase{padding:110px 0;position:relative;}
+.showcase::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+}
+.sec-head{text-align:center;padding:0 24px;margin-bottom:64px;}
+.sec-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:5px 16px;border-radius:99px;
+  border:1px solid var(--border2);background:var(--ink2);
+  color:var(--fog2);font-size:11px;font-weight:700;letter-spacing:1.8px;
+  text-transform:uppercase;margin-bottom:18px;
+}
+.sec-h{font-size:clamp(32px,4.5vw,54px);font-weight:900;line-height:1.1;letter-spacing:-2px;margin-bottom:14px;}
+.sec-h span{color:var(--cyan);}
+.sec-sub{font-size:16px;color:var(--fog2);max-width:500px;margin:0 auto;}
+
+/* Slides layout */
+.slides-shell{
+  display:flex;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  min-height:520px;
+}
+.slides-sidebar{
+  width:270px;min-width:270px;
+  border-left:1px solid var(--border);
+}
+.stab{
+  padding:20px 26px;cursor:none;position:relative;overflow:hidden;
+  border-left:3px solid transparent;transition:background .3s;
+}
+.stab.on{border-left-color:var(--cyan);background:rgba(0,240,255,.04);}
+.stab-icon{font-size:24px;margin-bottom:5px;}
+.stab-title{font-size:13px;font-weight:800;color:var(--snow);margin-bottom:3px;transition:color .3s;}
+.stab.on .stab-title{color:var(--cyan);}
+.stab-desc{font-size:11px;color:var(--fog);line-height:1.5;}
+.stab-bar{
+  position:absolute;bottom:0;left:0;height:2px;
+  background:var(--cyan);width:0;
+}
+.stab.on .stab-bar{animation:barprog 5s linear forwards;}
+@keyframes barprog{from{width:0}to{width:100%}}
+
+.slides-main{flex:1;position:relative;overflow:hidden;}
+.spanel{
+  position:absolute;inset:0;
+  display:flex;align-items:center;gap:48px;padding:44px 52px;
+  opacity:0;transform:translateX(24px);
+  transition:all .5s cubic-bezier(.4,0,.2,1);pointer-events:none;
+}
+.spanel.on{opacity:1;transform:translateX(0);pointer-events:all;}
+
+/* Visual mockup box */
+.svis{
+  width:340px;min-width:340px;height:390px;
+  border-radius:18px;background:var(--ink3);
+  border:1px solid var(--border2);position:relative;overflow:hidden;
+  box-shadow:0 20px 70px rgba(0,0,0,.5);flex-shrink:0;
+}
+.svis::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--cyan),var(--purple));z-index:1;
+}
+/* info side */
+.sinfo{flex:1;}
+.s-itag{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 12px;border-radius:99px;border:1px solid;
+  font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px;
+}
+.sinfo h3{font-size:32px;font-weight:900;letter-spacing:-1.5px;margin-bottom:14px;line-height:1.1;}
+.sinfo p{font-size:15px;color:var(--fog2);line-height:1.8;margin-bottom:22px;}
+.s-feats{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.s-feats li{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--fog2);}
+.chk{
+  width:20px;height:20px;border-radius:5px;
+  background:rgba(6,214,160,.14);border:1px solid rgba(6,214,160,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:var(--green);flex-shrink:0;
+}
+
+/* ═══ VISUAL MOCKUPS ═══ */
+/* KPI cards */
+.kpi-wrap{position:absolute;inset:0;padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;align-content:start;}
+.kcard{background:var(--ink2);border:1px solid var(--border2);border-radius:10px;padding:12px;position:relative;overflow:hidden;}
+.kcard::after{content:'';position:absolute;top:0;right:0;left:0;height:2px;opacity:.7;}
+.kc0::after{background:var(--cyan)}.kc1::after{background:var(--purple)}.kc2::after{background:var(--red)}.kc3::after{background:var(--gold)}.kc4::after{background:var(--green)}.kc5::after{background:var(--orange)}
+.kl{font-size:9px;color:var(--fog);font-weight:600;margin-bottom:5px;letter-spacing:.3px;}
+.kv{font-size:20px;font-weight:900;}
+.ks{font-size:9px;color:var(--fog);margin-top:2px;}
+.cg{color:var(--green)}.cr{color:var(--red)}.cc{color:var(--cyan)}.cgo{color:var(--gold)}
+
+/* Equity chart */
+.chart-wrap{position:absolute;inset:0;padding:16px;}
+.chart-lbl{font-size:10px;font-weight:700;color:var(--fog2);margin-bottom:10px;}
+
+/* AI panel */
+.ai-wrap{position:absolute;inset:0;padding:16px;display:flex;flex-direction:column;gap:9px;}
+.ai-card{
+  background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(0,240,255,.04));
+  border:1px solid rgba(124,58,237,.22);border-radius:12px;padding:12px;
+}
+.ai-card2{
+  background:linear-gradient(135deg,rgba(0,240,255,.07),rgba(0,240,255,.02));
+  border:1px solid rgba(0,240,255,.15);border-radius:12px;padding:12px;
+}
+.ai-hl{font-size:9px;color:var(--purple);font-weight:700;margin-bottom:5px;letter-spacing:1px;text-transform:uppercase;}
+.ai-hl2{font-size:9px;color:var(--cyan);font-weight:700;margin-bottom:5px;letter-spacing:1px;text-transform:uppercase;}
+.ai-txt{font-size:11px;color:var(--fog2);line-height:1.6;}
+.ai-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px;}
+.ai-tag{padding:3px 8px;border-radius:99px;font-size:9px;font-weight:700;border:1px solid;}
+
+/* Heatmap */
+.hm-wrap{position:absolute;inset:0;padding:14px;}
+.hm-lbl{font-size:10px;font-weight:700;color:var(--fog);margin-bottom:8px;}
+.hm-days{display:flex;justify-content:space-between;margin-bottom:5px;}
+.hm-days span{font-size:8px;color:var(--fog);}
+.hm-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.hm-cell{aspect-ratio:1;border-radius:3px;}
+.hm-legend{display:flex;align-items:center;gap:5px;margin-top:10px;}
+.hm-swatch{width:12px;height:12px;border-radius:2px;}
+
+/* Plan evaluator */
+.plan-wrap{position:absolute;inset:0;padding:14px;}
+.plan-score-box{
+  background:linear-gradient(135deg,rgba(0,240,255,.1),rgba(124,58,237,.08));
+  border:1px solid rgba(0,240,255,.14);border-radius:12px;
+  padding:14px;text-align:center;margin-bottom:12px;
+}
+.plan-big{font-size:44px;font-weight:900;color:var(--cyan);line-height:1;}
+.plan-big-lbl{font-size:10px;color:var(--fog);margin-top:3px;}
+.pcrit{display:flex;flex-direction:column;gap:7px;}
+.prow{display:flex;align-items:center;gap:7px;}
+.prl{font-size:9px;color:var(--fog2);width:80px;flex-shrink:0;}
+.prb{flex:1;height:4px;background:var(--border);border-radius:2px;}
+.prf{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--cyan),var(--purple));}
+.prs{font-size:9px;font-weight:700;color:var(--cyan);width:28px;text-align:left;}
+
+/* Loss limit */
+.ll-wrap{position:absolute;inset:0;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.ll-badge{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 14px;border-radius:99px;font-size:11px;font-weight:800;
+}
+.ll-safe{background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.3);color:var(--green);}
+.ll-stats{display:flex;justify-content:space-around;}
+.ll-stat{text-align:center;}
+.ll-val{font-size:18px;font-weight:900;}
+.ll-lbl{font-size:9px;color:var(--fog);margin-top:2px;}
+.ll-prog-box{background:var(--ink2);border:1px solid var(--border2);border-radius:10px;padding:10px;}
+.ll-prog-head{display:flex;justify-content:space-between;margin-bottom:6px;}
+.ll-prog-label{font-size:10px;color:var(--fog);}
+.ll-prog-val{font-size:10px;font-weight:700;color:var(--green);}
+.ll-bar{height:5px;background:var(--border);border-radius:3px;}
+.ll-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green),#7aff6a);}
+
+/* ══ VIDEO SECTION ══ */
+.vid-section{padding:110px 24px;text-align:center;position:relative;overflow:hidden;}
+.vid-section::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 55% at 50% 50%,rgba(124,58,237,.08) 0%,transparent 70%);
+}
+.vid-wrap{max-width:880px;margin:52px auto 0;position:relative;}
+.vid-frame{
+  position:relative;border-radius:22px;overflow:hidden;
+  border:1px solid var(--border2);aspect-ratio:16/9;cursor:none;
+  box-shadow:0 36px 110px rgba(0,0,0,.6),0 0 0 1px rgba(0,240,255,.07);
+}
+.vid-frame::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--cyan),var(--purple),var(--orange));z-index:2;
+}
+.vid-canvas-wrap{position:absolute;inset:0;background:var(--ink3);}
+#vidCanvas{width:100%;height:100%;}
+.vid-overlay{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,0) 25%,rgba(4,7,15,.75) 100%);
+}
+.vid-center{
+  position:absolute;inset:0;z-index:3;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+}
+.play-ring{
+  width:78px;height:78px;border-radius:50%;
+  background:rgba(0,240,255,.12);backdrop-filter:blur(20px);
+  border:2px solid rgba(0,240,255,.4);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .3s;box-shadow:0 0 36px rgba(0,240,255,.2);cursor:none;
+}
+.play-ring:hover{background:rgba(0,240,255,.22);transform:scale(1.1);}
+.play-tri{width:0;height:0;border-top:14px solid transparent;border-bottom:14px solid transparent;border-left:24px solid var(--cyan);margin-right:-4px;}
+.vid-title-text{font-size:17px;font-weight:700;color:var(--snow);}
+.vid-pill{
+  position:absolute;bottom:18px;left:50%;transform:translateX(-50%);z-index:3;
+  padding:6px 16px;border-radius:99px;white-space:nowrap;
+  background:rgba(4,7,15,.85);backdrop-filter:blur(10px);
+  border:1px solid var(--border2);font-size:12px;color:var(--fog2);font-weight:600;
+}
+.vid-chips{display:flex;justify-content:center;gap:10px;margin-top:24px;flex-wrap:wrap;}
+.vchip{
+  display:flex;align-items:center;gap:7px;
+  padding:7px 14px;border-radius:99px;
+  background:var(--ink2);border:1px solid var(--border);
+  font-size:12px;font-weight:600;color:var(--fog2);cursor:none;transition:all .3s;
+}
+.vchip:hover{border-color:rgba(0,240,255,.3);color:var(--cyan);}
+.vcdot{width:5px;height:5px;border-radius:50%;background:var(--cyan);}
+
+/* Video modal */
+.vmod{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(4,7,15,.97);backdrop-filter:blur(20px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .4s;
+}
+.vmod.open{opacity:1;pointer-events:all;}
+.vmod-box{
+  width:90%;max-width:940px;position:relative;
+  border-radius:18px;overflow:hidden;
+  border:1px solid var(--border2);
+  transform:scale(.9);transition:transform .4s cubic-bezier(.4,0,.2,1);
+}
+.vmod.open .vmod-box{transform:scale(1);}
+.vmod-inner{
+  aspect-ratio:16/9;background:var(--ink3);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  position:relative;
+}
+.vmod-inner iframe{position:absolute;inset:0;width:100%;height:100%;}
+.vmod-close{
+  position:absolute;top:-44px;left:0;
+  background:transparent;border:none;color:var(--fog2);
+  font-size:24px;cursor:none;font-family:var(--sans);transition:color .2s;
+}
+.vmod-close:hover{color:var(--snow);}
+
+/* ══ PRICING ══ */
+.pricing-sec{padding:110px 24px;}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:980px;margin:0 auto;}
+.pcard{
+  border-radius:18px;padding:32px 26px;
+  background:var(--ink2);border:1px solid var(--border2);
+  position:relative;overflow:hidden;transition:all .3s;
+}
+.pcard:hover{transform:translateY(-5px);border-color:rgba(0,240,255,.22);}
+.pcard.feat{
+  background:linear-gradient(160deg,rgba(0,240,255,.05),rgba(124,58,237,.07));
+  border-color:rgba(0,240,255,.28);
+}
+.pcard.feat::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+}
+.pbadge{
+  position:absolute;top:16px;left:16px;
+  padding:3px 11px;border-radius:99px;font-size:10px;font-weight:800;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));color:var(--ink);
+}
+.pname{font-size:12px;font-weight:800;color:var(--fog2);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;}
+.pprice{font-size:50px;font-weight:900;letter-spacing:-2px;line-height:1;margin-bottom:3px;}
+.pprice sup{font-size:20px;font-weight:700;vertical-align:super;}
+.pperiod{font-size:12px;color:var(--fog);margin-bottom:22px;}
+.pdiv{height:1px;background:var(--border);margin-bottom:20px;}
+.pfeats{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:26px;}
+.pfeats li{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--fog2);}
+.pfc{color:var(--green);font-size:12px;font-weight:800;}
+.pfx{color:var(--fog);font-size:12px;}
+.pcta{
+  display:block;width:100%;padding:13px;border-radius:11px;
+  text-align:center;font-family:var(--sans);font-size:14px;font-weight:800;
+  cursor:none;text-decoration:none;transition:all .25s;
+}
+.pcta-out{border:1px solid var(--border2);background:transparent;color:var(--snow);}
+.pcta-out:hover{border-color:rgba(0,240,255,.4);color:var(--cyan);}
+.pcta-in{
+  background:linear-gradient(135deg,var(--cyan),#009cc2);color:var(--ink);border:none;
+  box-shadow:0 4px 22px rgba(0,240,255,.28);
+}
+.pcta-in:hover{transform:translateY(-2px);box-shadow:0 8px 34px rgba(0,240,255,.45);}
+
+/* ══ TESTIMONIALS ══ */
+.testi-sec{padding:90px 24px;}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1060px;margin:52px auto 0;}
+.tcard{
+  background:var(--ink2);border:1px solid var(--border);
+  border-radius:18px;padding:26px;transition:all .3s;position:relative;overflow:hidden;
+}
+.tcard::before{
+  content:'"';position:absolute;top:-16px;right:16px;
+  font-size:100px;font-weight:900;line-height:1;
+  color:rgba(0,240,255,.04);pointer-events:none;
+}
+.tcard:hover{border-color:rgba(0,240,255,.15);transform:translateY(-3px);}
+.tstars{color:var(--gold);font-size:12px;letter-spacing:2px;margin-bottom:12px;}
+.ttext{font-size:13px;color:var(--fog2);line-height:1.8;margin-bottom:18px;}
+.tauthor{display:flex;align-items:center;gap:10px;}
+.tav{
+  width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:900;
+  background:linear-gradient(135deg,var(--purple),var(--cyan));color:#fff;flex-shrink:0;
+}
+.tname{font-size:13px;font-weight:700;}
+.trole{font-size:11px;color:var(--fog);}
+
+/* ══ CTA BANNER ══ */
+.cta-sec{padding:90px 24px;text-align:center;position:relative;overflow:hidden;}
+.cta-sec::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 80% at 50% 50%,rgba(124,58,237,.11) 0%,transparent 70%);
+}
+.cta-glow{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:480px;height:480px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,240,255,.05) 0%,transparent 70%);
+}
+.cta-h{font-size:clamp(32px,5vw,62px);font-weight:900;letter-spacing:-2px;margin-bottom:18px;position:relative;}
+.cta-sub{font-size:17px;color:var(--fog2);position:relative;margin-bottom:38px;max-width:440px;margin-left:auto;margin-right:auto;}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;}
+
+/* ══ FOOTER ══ */
+footer{
+  border-top:1px solid var(--border);padding:34px 56px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;
+}
+.flinks{display:flex;gap:22px;}
+.flinks a{color:var(--fog);text-decoration:none;font-size:12px;font-weight:600;transition:color .2s;}
+.flinks a:hover{color:var(--cyan);}
+.fcopy{font-size:12px;color:var(--fog);}
+
+/* ══ SCROLL REVEAL ══ */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease;}
+.rv.vis{opacity:1;transform:none;}
+
+/* ══ MOBILE ══ */
+@media(max-width:880px){
+  nav{padding:14px 18px;}
+  nav.up{padding:10px 18px;}
+  .nav-links{display:none;}
+  .hero-h{font-size:clamp(40px,10vw,58px);letter-spacing:-2px;}
+  .hero-stats{gap:20px;}
+  .slides-shell{flex-direction:column;}
+  .slides-sidebar{width:100%;display:flex;overflow-x:auto;border-left:none;border-bottom:1px solid var(--border);}
+  .stab{min-width:140px;border-left:none;border-bottom:3px solid transparent;}
+  .stab.on{border-bottom-color:var(--cyan);border-left-color:transparent;}
+  .spanel{flex-direction:column;padding:26px 18px;gap:26px;}
+  .svis{width:100%;min-width:unset;height:240px;}
+  .pricing-grid{grid-template-columns:1fr;max-width:360px;}
+  .testi-grid{grid-template-columns:1fr;}
+  footer{flex-direction:column;text-align:center;padding:26px 18px;}
+  body{cursor:auto;}
+  #cur,#curR{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cur"></div>
+<div id="curR"></div>
+
+<!-- ══════════ NAV ══════════ -->
+<nav id="nav">
+  <a href="#" class="logo">
+    <div class="logo-mark">📈</div>
+    <div class="logo-text">Trade<em>Flow</em> Pro</div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features" data-ar="المميزات" data-en="Features">المميزات</a></li>
+    <li><a href="#video" data-ar="الفيديو" data-en="Video">الفيديو</a></li>
+    <li><a href="#pricing" data-ar="الأسعار" data-en="Pricing">الأسعار</a></li>
+  </ul>
+  <div class="nav-r">
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">
+      <span class="flag" id="langFlag">🇺🇸</span>
+      <span id="langLabel">English</span>
+    </button>
+    <a href="login.html" class="btn-ghost" data-ar="تسجيل الدخول" data-en="Log In">تسجيل الدخول</a>
+    <a href="login.html#register" class="btn-fill" data-ar="ابدأ مجاناً" data-en="Start Free">ابدأ مجاناً</a>
+  </div>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker-row">
+  <div class="ticker-inner" id="tickEl"></div>
+</div>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-radial"></div>
+    <div class="hero-grid"></div>
+    <canvas id="heroCanvas"></canvas>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="pdot"></span>
+      <span data-ar="منصة التداول الأذكى في العالم العربي" data-en="The Smartest Trading Journal Platform">منصة التداول الأذكى في العالم العربي</span>
+    </div>
+    <h1 class="hero-h">
+      <span data-ar="تداول بذكاء." data-en="Trade Smarter.">تداول بذكاء.</span><br>
+      <span class="grad" data-ar="حلّل بعمق." data-en="Analyze Deeper.">حلّل بعمق.</span><br>
+      <span data-ar="تطوّر بسرعة." data-en="Grow Faster.">تطوّر بسرعة.</span>
+    </h1>
+    <p class="hero-sub" data-ar="سجّل صفقاتك، حلّلها بالذكاء الاصطناعي، وأتقن تداولك مع أقوى منصة يوميات تداول مدعومة بـ Claude AI" data-en="Log your trades, analyze them with AI, and master your trading with the most powerful journal platform powered by Claude AI">
+      سجّل صفقاتك، حلّلها بالذكاء الاصطناعي، وأتقن تداولك مع أقوى منصة يوميات تداول مدعومة بـ Claude AI
+    </p>
+    <div class="hero-actions">
+      <a href="login.html#register" class="btn-hero" data-ar="ابدأ مجاناً الآن ←" data-en="Start Free Now →">ابدأ مجاناً الآن ←</a>
+      <a href="#video" class="btn-hero2" data-ar="▶ شاهد كيف يعمل" data-en="▶ See How It Works">▶ شاهد كيف يعمل</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="snum" data-target="2800">0</div><div class="slabel" data-ar="متداول نشط" data-en="Active Traders">متداول نشط</div></div>
+      <div class="sdiv"></div>
+      <div><div class="snum" data-target="500000">0</div><div class="slabel" data-ar="صفقة محللة" data-en="Trades Analyzed">صفقة محللة</div></div>
+      <div class="sdiv"></div>
+      <div><div class="snum">16<em>+</em></div><div class="slabel" data-ar="مؤشر أداء" data-en="Performance KPIs">مؤشر أداء</div></div>
+      <div class="sdiv"></div>
+      <div><div class="snum">96<em>%</em></div><div class="slabel" data-ar="رضا المستخدمين" data-en="User Satisfaction">رضا المستخدمين</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FEATURE SLIDES ══════════ -->
+<section class="showcase" id="features">
+  <div class="sec-head rv">
+    <div class="sec-tag"><span data-ar="✨ المميزات" data-en="✨ Features">✨ المميزات</span></div>
+    <h2 class="sec-h"><span data-ar="كل أداة يحتاجها" data-en="Every Tool a">كل أداة يحتاجها</span><br><span data-ar="المتداول المحترف" data-en="Pro Trader Needs">المتداول المحترف</span></h2>
+    <p class="sec-sub" data-ar="تفاعل مع كل ميزة واكتشف كيف تحوّل بياناتك إلى قرارات ذكية" data-en="Interact with each feature and discover how it transforms your data into smart decisions">تفاعل مع كل ميزة واكتشف كيف تحوّل بياناتك إلى قرارات ذكية</p>
+  </div>
+
+  <div class="slides-shell rv">
+    <!-- SIDEBAR TABS -->
+    <div class="slides-sidebar">
+      <div class="stab on" onclick="goSlide(0)">
+        <div class="stab-icon">📊</div>
+        <div class="stab-title" data-ar="16+ مؤشر أداء" data-en="16+ KPI Metrics">16+ مؤشر أداء</div>
+        <div class="stab-desc" data-ar="قياس شامل لأدائك" data-en="Comprehensive performance tracking">قياس شامل لأدائك</div>
+        <div class="stab-bar"></div>
+      </div>
+      <div class="stab" onclick="goSlide(1)">
+        <div class="stab-icon">📈</div>
+        <div class="stab-title" data-ar="منحنى الأرباح" data-en="Equity Curve">منحنى الأرباح</div>
+        <div class="stab-desc" data-ar="تتبع نموك المالي" data-en="Track your financial growth">تتبع نموك المالي</div>
+        <div class="stab-bar"></div>
+      </div>
+      <div class="stab" onclick="goSlide(2)">
+        <div class="stab-icon">🤖</div>
+        <div class="stab-title" data-ar="تحليل بالذكاء الاصطناعي" data-en="AI Analysis">تحليل بالذكاء الاصطناعي</div>
+        <div class="stab-desc" data-ar="نصائح فورية بـ Claude AI" data-en="Instant advice by Claude AI">نصائح فورية بـ Claude AI</div>
+        <div class="stab-bar"></div>
+      </div>
+      <div class="stab" onclick="goSlide(3)">
+        <div class="stab-icon">🗓️</div>
+        <div class="stab-title" data-ar="الخريطة الحرارية" data-en="Heatmap Calendar">الخريطة الحرارية</div>
+        <div class="stab-desc" data-ar="أنماط أرباحك بصرياً" data-en="Visual profit/loss patterns">أنماط أرباحك بصرياً</div>
+        <div class="stab-bar"></div>
+      </div>
+      <div class="stab" onclick="goSlide(4)">
+        <div class="stab-icon">🎯</div>
+        <div class="stab-title" data-ar="مقيّم الخطة اليومي" data-en="Daily Plan Evaluator">مقيّم الخطة اليومي</div>
+        <div class="stab-desc" data-ar="انضباط يومي ممنهج" data-en="Systematic daily discipline">انضباط يومي ممنهج</div>
+        <div class="stab-bar"></div>
+      </div>
+      <div class="stab" onclick="goSlide(5)">
+        <div class="stab-icon">🛡️</div>
+        <div class="stab-title" data-ar="حد الخسارة اليومي" data-en="Daily Loss Limit">حد الخسارة اليومي</div>
+        <div class="stab-desc" data-ar="حماية رأس مالك" data-en="Protect your capital">حماية رأس مالك</div>
+        <div class="stab-bar"></div>
+      </div>
+    </div>
+
+    <!-- PANELS -->
+    <div class="slides-main">
+
+      <!-- PANEL 0: KPIs -->
+      <div class="spanel on">
+        <div class="svis">
+          <div class="kpi-wrap">
+            <div class="kcard kc0"><div class="kl" data-ar="نسبة الفوز" data-en="Win Rate">نسبة الفوز</div><div class="kv cg">67.4%</div><div class="ks">↑ +3.2%</div></div>
+            <div class="kcard kc1"><div class="kl" data-ar="معامل الربح" data-en="Profit Factor">معامل الربح</div><div class="kv cc">2.31</div><div class="ks" data-ar="ممتاز" data-en="Excellent">ممتاز</div></div>
+            <div class="kcard kc2"><div class="kl" data-ar="أقصى انهيار" data-en="Max Drawdown">أقصى انهيار</div><div class="kv cr">-8.4%</div><div class="ks" data-ar="آخر 30 يوم" data-en="Last 30d">آخر 30 يوم</div></div>
+            <div class="kcard kc3"><div class="kl">Sharpe Ratio</div><div class="kv cgo">1.87</div><div class="ks" data-ar="قوي" data-en="Strong">قوي</div></div>
+            <div class="kcard kc4"><div class="kl" data-ar="متوسط R:R" data-en="Avg R:R">متوسط R:R</div><div class="kv cc">1:2.4</div><div class="ks" data-ar="نسبة جيدة" data-en="Good ratio">نسبة جيدة</div></div>
+            <div class="kcard kc5"><div class="kl" data-ar="صافي الربح" data-en="Net Profit">صافي الربح</div><div class="kv cg">+$4,280</div><div class="ks" data-ar="هذا الشهر" data-en="This month">هذا الشهر</div></div>
+          </div>
+        </div>
+        <div class="sinfo">
+          <div class="s-itag" style="background:rgba(0,240,255,.1);border-color:rgba(0,240,255,.25);color:var(--cyan)">📊 <span data-ar="أداء شامل" data-en="Full Performance">أداء شامل</span></div>
+          <h3 data-ar="16+ مؤشر أداء احترافي" data-en="16+ Pro Performance KPIs">16+ مؤشر أداء احترافي</h3>
+          <p data-ar="لا تتخمن — قِس أداءك بدقة علمية مع أشمل مجموعة مؤشرات في منصات التداول العربية." data-en="Stop guessing — measure your performance scientifically with the most comprehensive set of trading KPIs.">لا تتخمن — قِس أداءك بدقة علمية مع أشمل مجموعة مؤشرات في منصات التداول العربية.</p>
+          <ul class="s-feats">
+            <li><span class="chk">✓</span><span data-ar="Win Rate، Profit Factor، Sharpe Ratio" data-en="Win Rate, Profit Factor, Sharpe Ratio">Win Rate، Profit Factor، Sharpe Ratio</span></li>
+            <li><span class="chk">✓</span><span data-ar="Max Drawdown وأقصى خسارة متتالية" data-en="Max Drawdown & worst losing streak">Max Drawdown وأقصى خسارة متتالية</span></li>
+            <li><span class="chk">✓</span><span data-ar="Expectancy وصافي الربح اليومي/الشهري" data-en="Expectancy & daily/monthly net profit">Expectancy وصافي الربح اليومي/الشهري</span></li>
+            <li><span class="chk">✓</span><span data-ar="تحديث فوري مع كل صفقة" data-en="Real-time update with every trade">تحديث فوري مع كل صفقة</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- PANEL 1: Equity -->
+      <div class="spanel">
+        <div class="svis">
+          <div class="chart-wrap">
+            <div class="chart-lbl" data-ar="📈 منحنى الأرباح — آخر 30 يوم" data-en="📈 Equity Curve — Last 30 Days">📈 منحنى الأرباح — آخر 30 يوم</div>
+            <svg viewBox="0 0 310 210" width="100%" style="height:220px" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="eg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#00f0ff" stop-opacity=".25"/>
+                  <stop offset="100%" stop-color="#00f0ff" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <line x1="0" y1="50" x2="310" y2="50" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+              <line x1="0" y1="100" x2="310" y2="100" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+              <line x1="0" y1="150" x2="310" y2="150" stroke="rgba(255,255,255,.04)" stroke-width="1"/>
+              <path d="M0 180 L310 130" fill="none" stroke="rgba(124,58,237,.4)" stroke-width="1" stroke-dasharray="4,3"/>
+              <path d="M0 190 C40 182,60 172,80 160 C100 148,112 160,132 142 C152 124,168 105,190 82 C212 59,224 72,244 52 C264 32,282 18,310 5 L310 210 L0 210Z" fill="url(#eg)"/>
+              <path d="M0 190 C40 182,60 172,80 160 C100 148,112 160,132 142 C152 124,168 105,190 82 C212 59,224 72,244 52 C264 32,282 18,310 5" fill="none" stroke="#00f0ff" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="132" cy="142" r="3.5" fill="#00f0ff" opacity=".7"/>
+              <circle cx="244" cy="52" r="3.5" fill="#00f0ff" opacity=".7"/>
+              <circle cx="310" cy="5" r="5" fill="#00f0ff"/>
+              <rect x="242" y="0" width="66" height="16" rx="4" fill="rgba(0,240,255,.15)"/>
+              <text x="275" y="12" text-anchor="middle" fill="#00f0ff" font-size="9" font-weight="700" font-family="Inter">+$4,280</text>
+            </svg>
+            <div style="display:flex;gap:14px;margin-top:6px">
+              <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--fog)"><div style="width:8px;height:8px;border-radius:50%;background:var(--cyan)"></div><span data-ar="منحنى الأرباح" data-en="Equity Curve">منحنى الأرباح</span></div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--fog)"><div style="width:8px;height:8px;border-radius:50%;background:var(--purple)"></div><span data-ar="الهدف" data-en="Target">الهدف</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="sinfo">
+          <div class="s-itag" style="background:rgba(6,214,160,.1);border-color:rgba(6,214,160,.3);color:var(--green)">📈 <span data-ar="تتبع النمو" data-en="Growth Tracking">تتبع النمو</span></div>
+          <h3 data-ar="منحنى الأرباح التفاعلي" data-en="Interactive Equity Curve">منحنى الأرباح التفاعلي</h3>
+          <p data-ar="شاهد مسيرتك المالية تتشكل بصرياً مع رسم بياني حي يتحدث مع كل صفقة جديدة." data-en="Watch your financial journey visualized live — a dynamic chart that updates with every new trade.">شاهد مسيرتك المالية تتشكل بصرياً مع رسم بياني حي يتحدث مع كل صفقة جديدة.</p>
+          <ul class="s-feats">
+            <li><span class="chk">✓</span><span data-ar="رسم بياني حي بالوقت الحقيقي" data-en="Live real-time chart updates">رسم بياني حي بالوقت الحقيقي</span></li>
+            <li><span class="chk">✓</span><span data-ar="مقارنة الأداء بالهدف الشهري" data-en="Compare performance vs monthly target">مقارنة الأداء بالهدف الشهري</span></li>
+            <li><span class="chk">✓</span><span data-ar="رؤية فترات الانهيار وتعافي الأداء" data-en="See drawdown periods and recovery">رؤية فترات الانهيار وتعافي الأداء</span></li>
+            <li><span class="chk">✓</span><span data-ar="تصدير الرسم بـ PNG/PDF" data-en="Export chart as PNG or PDF">تصدير الرسم بـ PNG/PDF</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- PANEL 2: AI -->
+      <div class="spanel">
+        <div class="svis">
+          <div class="ai-wrap">
+            <div class="ai-card">
+              <div class="ai-hl">🤖 Claude AI Analysis</div>
+              <div class="ai-txt" data-ar="بناءً على تحليل 47 صفقة هذا الشهر، نسبة فوزك 67% ممتازة. لاحظت ضعفاً في جلسة لندن — تخسر 3 من كل 4 صفقات هناك. أنصحك بالتركيز على جلسة نيويورك." data-en="Based on 47 trades this month, your 67% win rate is excellent. I noticed weakness in the London session — you lose 3 of 4 trades there. I recommend focusing on the New York session.">بناءً على تحليل 47 صفقة هذا الشهر، نسبة فوزك 67% ممتازة. لاحظت ضعفاً في جلسة لندن — تخسر 3 من كل 4 صفقات هناك.</div>
+            </div>
+            <div class="ai-card2">
+              <div class="ai-hl2">💡 <span data-ar="توصية فورية" data-en="Instant Recommendation">توصية فورية</span></div>
+              <div class="ai-txt" data-ar="أقوى استراتيجياتك Breakout بنسبة 82%. قلّل صفقات Counter-trend التي تسبب 60% من خسائرك." data-en="Your strongest strategy is Breakout at 82%. Reduce Counter-trend trades which cause 60% of your losses.">أقوى استراتيجياتك Breakout بنسبة 82%. قلّل صفقات Counter-trend التي تسبب 60% من خسائرك.</div>
+            </div>
+            <div class="ai-tags">
+              <div class="ai-tag" style="background:rgba(6,214,160,.1);border-color:rgba(6,214,160,.3);color:var(--green)" data-ar="✓ أداء ممتاز" data-en="✓ Excellent">✓ أداء ممتاز</div>
+              <div class="ai-tag" style="background:rgba(240,180,41,.1);border-color:rgba(240,180,41,.3);color:var(--gold)" data-ar="⚠ تحسين" data-en="⚠ Improve">⚠ تحسين</div>
+              <div class="ai-tag" style="background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.3);color:#b39dfa" data-ar="🎯 هدف" data-en="🎯 Goal">🎯 هدف</div>
+            </div>
+          </div>
+        </div>
+        <div class="sinfo">
+          <div class="s-itag" style="background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.3);color:#b39dfa">🤖 AI</div>
+          <h3 data-ar="تحليل AI عميق وفوري" data-en="Deep & Instant AI Analysis">تحليل AI عميق وفوري</h3>
+          <p data-ar="المنصة الوحيدة التي تعطيك نصيحة مخصصة بناءً على بياناتك الحقيقية — لا نصائح عامة." data-en="The only platform that gives you personalized advice based on your real data — no generic tips.">المنصة الوحيدة التي تعطيك نصيحة مخصصة بناءً على بياناتك الحقيقية — لا نصائح عامة.</p>
+          <ul class="s-feats">
+            <li><span class="chk">✓</span><span data-ar="تحليل نقاط القوة والضعف تلقائياً" data-en="Automatic strengths & weaknesses analysis">تحليل نقاط القوة والضعف تلقائياً</span></li>
+            <li><span class="chk">✓</span><span data-ar="اكتشاف الأنماط في صفقاتك الخاسرة" data-en="Pattern detection in losing trades">اكتشاف الأنماط في صفقاتك الخاسرة</span></li>
+            <li><span class="chk">✓</span><span data-ar="توصيات مخصصة لاستراتيجيتك" data-en="Custom recommendations for your strategy">توصيات مخصصة لاستراتيجيتك</span></li>
+            <li><span class="chk">✓</span><span data-ar="مدعوم بـ Claude AI من Anthropic" data-en="Powered by Claude AI from Anthropic">مدعوم بـ Claude AI من Anthropic</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- PANEL 3: Heatmap -->
+      <div class="spanel">
+        <div class="svis">
+          <div class="hm-wrap">
+            <div class="hm-lbl" data-ar="🗓️ الخريطة الحرارية — مايو 2025" data-en="🗓️ Heatmap Calendar — May 2025">🗓️ الخريطة الحرارية — مايو 2025</div>
+            <div class="hm-days">
+              <span data-ar="أحد" data-en="Sun">أحد</span><span data-ar="إثن" data-en="Mon">إثن</span><span data-ar="ثلا" data-en="Tue">ثلا</span><span data-ar="أرب" data-en="Wed">أرب</span><span data-ar="خمي" data-en="Thu">خمي</span><span data-ar="جمع" data-en="Fri">جمع</span><span data-ar="سبت" data-en="Sat">سبت</span>
+            </div>
+            <div class="hm-grid" id="hmGrid"></div>
+            <div class="hm-legend" style="margin-top:10px">
+              <span style="font-size:9px;color:var(--fog)" data-ar="خسارة" data-en="Loss">خسارة</span>
+              <div class="hm-swatch" style="background:rgba(255,59,92,.8)"></div>
+              <div class="hm-swatch" style="background:rgba(255,59,92,.4)"></div>
+              <div class="hm-swatch" style="background:rgba(255,255,255,.05)"></div>
+              <div class="hm-swatch" style="background:rgba(6,214,160,.4)"></div>
+              <div class="hm-swatch" style="background:rgba(6,214,160,.9)"></div>
+              <span style="font-size:9px;color:var(--fog)" data-ar="ربح" data-en="Profit">ربح</span>
+            </div>
+          </div>
+        </div>
+        <div class="sinfo">
+          <div class="s-itag" style="background:rgba(240,180,41,.1);border-color:rgba(240,180,41,.3);color:var(--gold)">🗓️ <span data-ar="تحليل بصري" data-en="Visual Analytics">تحليل بصري</span></div>
+          <h3 data-ar="الخريطة الحرارية الشهرية" data-en="Monthly Heatmap Calendar">الخريطة الحرارية الشهرية</h3>
+          <p data-ar="اكتشف أفضل وأسوأ أيامك في ثانية واحدة — رسم تلقائي يتحدث بلغة الألوان." data-en="Spot your best and worst days in one second — auto-generated color-coded calendar.">اكتشف أفضل وأسوأ أيامك في ثانية واحدة — رسم تلقائي يتحدث بلغة الألوان.</p>
+          <ul class="s-feats">
+            <li><span class="chk">✓</span><span data-ar="خريطة شهرية بألوان تدرجية" data-en="Monthly calendar with gradient colors">خريطة شهرية بألوان تدرجية</span></li>
+            <li><span class="chk">✓</span><span data-ar="كشف أنماط الأيام الرابحة والخاسرة" data-en="Detect winning & losing day patterns">كشف أنماط الأيام الرابحة والخاسرة</span></li>
+            <li><span class="chk">✓</span><span data-ar="تصفية حسب الشهر والاستراتيجية" data-en="Filter by month and strategy">تصفية حسب الشهر والاستراتيجية</span></li>
+            <li><span class="chk">✓</span><span data-ar="ربط بالمشاعر والجلسات" data-en="Linked to emotions & sessions">ربط بالمشاعر والجلسات</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- PANEL 4: Plan -->
+      <div class="spanel">
+        <div class="svis">
+          <div class="plan-wrap">
+            <div class="plan-score-box">
+              <div class="plan-big">87</div>
+              <div class="plan-big-lbl" data-ar="نقطة من 100 — أداء ممتاز 🏆" data-en="Points out of 100 — Excellent 🏆">نقطة من 100 — أداء ممتاز 🏆</div>
+            </div>
+            <div class="pcrit">
+              <div class="prow"><div class="prl" data-ar="الدخول بالخطة" data-en="Entry per plan">الدخول بالخطة</div><div class="prb"><div class="prf" style="width:95%"></div></div><div class="prs">19/20</div></div>
+              <div class="prow"><div class="prl" data-ar="احترام الحد" data-en="Respect limit">احترام الحد</div><div class="prb"><div class="prf" style="width:100%"></div></div><div class="prs">20/20</div></div>
+              <div class="prow"><div class="prl" data-ar="إدارة العاطفة" data-en="Emotion mgmt">إدارة العاطفة</div><div class="prb"><div class="prf" style="width:75%"></div></div><div class="prs">15/20</div></div>
+              <div class="prow"><div class="prl" data-ar="الخروج بالخطة" data-en="Exit per plan">الخروج بالخطة</div><div class="prb"><div class="prf" style="width:85%"></div></div><div class="prs">17/20</div></div>
+              <div class="prow"><div class="prl" data-ar="التحليل المسبق" data-en="Pre-analysis">التحليل المسبق</div><div class="prb"><div class="prf" style="width:80%"></div></div><div class="prs">16/20</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="sinfo">
+          <div class="s-itag" style="background:rgba(255,95,31,.1);border-color:rgba(255,95,31,.3);color:#ff8c5f">🎯 <span data-ar="انضباط" data-en="Discipline">انضباط</span></div>
+          <h3 data-ar="مقيّم خطة التداول اليومي" data-en="Daily Trading Plan Evaluator">مقيّم خطة التداول اليومي</h3>
+          <p data-ar="التداول الناجح انضباط لا حظ — قيّم يومياً مدى التزامك وتطور مع الوقت." data-en="Successful trading is discipline, not luck — evaluate your daily commitment and improve over time.">التداول الناجح انضباط لا حظ — قيّم يومياً مدى التزامك وتطور مع الوقت.</p>
+          <ul class="s-feats">
+            <li><span class="chk">✓</span><span data-ar="تقييم يومي بـ 5 معايير احترافية" data-en="Daily evaluation with 5 professional criteria">تقييم يومي بـ 5 معايير احترافية</span></li>
+            <li><span class="chk">✓</span><span data-ar="حكم تلقائي: ممتاز / جيد / متوسط / ضعيف" data-en="Auto verdict: Excellent / Good / Average / Poor">حكم تلقائي: ممتاز / جيد / متوسط / ضعيف</span></li>
+            <li><span class="chk">✓</span><span data-ar="تتبع الانضباط أسبوعياً وشهرياً" data-en="Track discipline weekly & monthly">تتبع الانضباط أسبوعياً وشهرياً</span></li>
+            <li><span class="chk">✓</span><span data-ar="قائمة مهام يومية قابلة للتخصيص" data-en="Customizable daily checklist">قائمة مهام يومية قابلة للتخصيص</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- PANEL 5: Loss Limit -->
+      <div class="spanel">
+        <div class="svis">
+          <div class="ll-wrap">
+            <div class="ll-badge ll-safe" data-ar="🟢 أنت في الأمان — استمر بتداولك" data-en="🟢 You're Safe — Keep Trading">🟢 <span data-ar="أنت في الأمان — استمر بتداولك" data-en="You're Safe — Keep Trading">أنت في الأمان — استمر بتداولك</span></div>
+            <svg viewBox="0 0 200 115" width="190" height="110" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto">
+              <defs>
+                <linearGradient id="gg" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#06d6a0"/><stop offset="60%" stop-color="#f0b429"/><stop offset="100%" stop-color="#ff3b5c"/>
+                </linearGradient>
+              </defs>
+              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="16" stroke-linecap="round"/>
+              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#gg)" stroke-width="16" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="188"/>
+              <line x1="100" y1="100" x2="48" y2="42" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="100" cy="100" r="6" fill="white"/>
+              <text x="14" y="115" fill="#06d6a0" font-size="9" font-weight="700" font-family="Inter">Safe</text>
+              <text x="180" y="115" fill="#ff3b5c" font-size="9" font-weight="700" text-anchor="end" font-family="Inter">Hit</text>
+            </svg>
+            <div class="ll-stats">
+              <div class="ll-stat"><div class="ll-val cg">$120</div><div class="ll-lbl" data-ar="الخسارة اليوم" data-en="Today's Loss">الخسارة اليوم</div></div>
+              <div class="ll-stat"><div class="ll-val" style="color:var(--snow)">$500</div><div class="ll-lbl" data-ar="الحد" data-en="Limit">الحد</div></div>
+              <div class="ll-stat"><div class="ll-val cgo">$380</div><div class="ll-lbl" data-ar="المتبقي" data-en="Remaining">المتبقي</div></div>
+            </div>
+            <div class="ll-prog-box">
+              <div class="ll-prog-head"><span class="ll-prog-label" data-ar="الاستخدام اليومي" data-en="Daily Usage">الاستخدام اليومي</span><span class="ll-prog-val">24%</span></div>
+              <div class="ll-bar"><div class="ll-fill" style="width:24%"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="sinfo">
+          <div class="s-itag" style="background:rgba(255,59,92,.1);border-color:rgba(255,59,92,.3);color:var(--red)">🛡️ <span data-ar="حماية" data-en="Protection">حماية</span></div>
+          <h3 data-ar="نظام حد الخسارة الذكي" data-en="Smart Daily Loss Limit">نظام حد الخسارة الذكي</h3>
+          <p data-ar="المتداولون الناجحون يحمون رأس مالهم أولاً — اجعل الحماية تلقائية." data-en="Successful traders protect their capital first — make protection automatic.">المتداولون الناجحون يحمون رأس مالهم أولاً — اجعل الحماية تلقائية.</p>
+          <ul class="s-feats">
+            <li><span class="chk">✓</span><span data-ar="حدد سقف خسارتك اليومية بنفسك" data-en="Set your own daily loss ceiling">حدد سقف خسارتك اليومية بنفسك</span></li>
+            <li><span class="chk">✓</span><span data-ar="تحذير فوري عند الوصول لـ 80% من الحد" data-en="Instant warning at 80% of the limit">تحذير فوري عند الوصول لـ 80% من الحد</span></li>
+            <li><span class="chk">✓</span><span data-ar="شارة حمراء واضحة عند تجاوز الحد" data-en="Red alert when limit is breached">شارة حمراء واضحة عند تجاوز الحد</span></li>
+            <li><span class="chk">✓</span><span data-ar="إحصائيات يومية وأسبوعية وشهرية" data-en="Daily, weekly & monthly statistics">إحصائيات يومية وأسبوعية وشهرية</span></li>
+          </ul>
+        </div>
+      </div>
+
+    </div><!-- /slides-main -->
+  </div><!-- /slides-shell -->
+</section>
+
+<!-- ══════════ VIDEO ══════════ -->
+<section class="vid-section" id="video">
+  <div style="position:relative;z-index:1">
+    <div class="sec-tag rv"><span data-ar="🎬 شرح المنصة" data-en="🎬 Platform Walkthrough">🎬 شرح المنصة</span></div>
+    <h2 class="sec-h rv"><span data-ar="شاهد كيف يعمل" data-en="See How It Works"><span data-ar="شاهد كيف يعمل" data-en="See How It Works">شاهد كيف يعمل</span></span><br><span data-ar="TradeFlow Pro" data-en="TradeFlow Pro">TradeFlow Pro</span></h2>
+    <p class="sec-sub rv" data-ar="فيديو شامل يشرح كل مميزات المنصة المبنية بالذكاء الاصطناعي" data-en="A complete walkthrough of every AI-powered feature on the platform">فيديو شامل يشرح كل مميزات المنصة المبنية بالذكاء الاصطناعي</p>
+    <div class="vid-wrap rv">
+      <div class="vid-frame" onclick="openVid()">
+        <div class="vid-canvas-wrap"><canvas id="vidCanvas"></canvas></div>
+        <div class="vid-overlay"></div>
+        <div class="vid-center">
+          <div class="play-ring"><div class="play-tri"></div></div>
+          <div class="vid-title-text" data-ar="دليل TradeFlow Pro الشامل" data-en="Complete TradeFlow Pro Walkthrough">دليل TradeFlow Pro الشامل</div>
+        </div>
+        <div class="vid-pill" data-ar="⏱ 12 دقيقة • عربي وإنجليزي" data-en="⏱ 12 min • Arabic & English">⏱ 12 دقيقة • عربي وإنجليزي</div>
+      </div>
+      <div class="vid-chips">
+        <div class="vchip"><span class="vcdot"></span><span data-ar="لوحة التحكم" data-en="Dashboard">لوحة التحكم</span></div>
+        <div class="vchip"><span class="vcdot"></span><span data-ar="تسجيل الصفقات" data-en="Trade Logging">تسجيل الصفقات</span></div>
+        <div class="vchip"><span class="vcdot"></span><span data-ar="تحليل AI" data-en="AI Analysis">تحليل AI</span></div>
+        <div class="vchip"><span class="vcdot"></span><span data-ar="مقيّم الخطة" data-en="Plan Evaluator">مقيّم الخطة</span></div>
+        <div class="vchip"><span class="vcdot"></span><span data-ar="الخريطة الحرارية" data-en="Heatmap">الخريطة الحرارية</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO MODAL -->
+<div class="vmod" id="vmod" onclick="closeVid(event)">
+  <div style="position:relative">
+    <button class="vmod-close" onclick="closeVid()" data-ar="✕ إغلاق" data-en="✕ Close">✕ إغلاق</button>
+    <div class="vmod-box">
+      <div class="vmod-inner">
+        <!--
+          ADD VIDEO: Replace this div with:
+          <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1"
+            frameborder="0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+        -->
+        <div style="font-size:48px;opacity:.25">🎬</div>
+        <div style="font-size:15px;font-weight:700;color:var(--fog2)" data-ar="أضف رابط الفيديو التعليمي" data-en="Add your tutorial video link">أضف رابط الفيديو التعليمي</div>
+        <div style="font-size:12px;color:var(--fog);font-family:monospace">youtube.com/embed/VIDEO_ID</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PRICING ══════════ -->
+<section class="pricing-sec" id="pricing">
+  <div class="sec-head rv">
+    <div class="sec-tag"><span data-ar="💎 الأسعار" data-en="💎 Pricing">💎 الأسعار</span></div>
+    <h2 class="sec-h"><span data-ar="اختر خطتك" data-en="Choose Your Plan">اختر خطتك</span><br><span data-ar="وابدأ رحلتك" data-en="Start Your Journey">وابدأ رحلتك</span></h2>
+    <p class="sec-sub" data-ar="جرّب مجاناً — لا بطاقة مطلوبة" data-en="Try for free — no credit card required">جرّب مجاناً — لا بطاقة مطلوبة</p>
+  </div>
+  <div class="pricing-grid rv">
+    <div class="pcard">
+      <div class="pname" data-ar="مجاني" data-en="Free">مجاني</div>
+      <div class="pprice"><sup>$</sup>0</div>
+      <div class="pperiod" data-ar="للأبد" data-en="Forever">للأبد</div>
+      <div class="pdiv"></div>
+      <ul class="pfeats">
+        <li><span class="pfc">✓</span><span data-ar="حتى 50 صفقة شهرياً" data-en="Up to 50 trades/month">حتى 50 صفقة شهرياً</span></li>
+        <li><span class="pfc">✓</span><span data-ar="مؤشرات أساسية" data-en="Basic KPIs">مؤشرات أساسية</span></li>
+        <li><span class="pfc">✓</span><span data-ar="منحنى الأرباح" data-en="Equity curve">منحنى الأرباح</span></li>
+        <li><span class="pfx">✗</span><span style="color:var(--fog)" data-ar="تحليل AI" data-en="AI Analysis">تحليل AI</span></li>
+        <li><span class="pfx">✗</span><span style="color:var(--fog)" data-ar="مقيّم الخطة" data-en="Plan Evaluator">مقيّم الخطة</span></li>
+      </ul>
+      <a href="login.html#register" class="pcta pcta-out" data-ar="ابدأ مجاناً" data-en="Start Free">ابدأ مجاناً</a>
+    </div>
+    <div class="pcard feat">
+      <div class="pbadge" data-ar="⭐ الأكثر شعبية" data-en="⭐ Most Popular">⭐ الأكثر شعبية</div>
+      <div class="pname" style="margin-top:28px">Pro</div>
+      <div class="pprice"><sup>$</sup>19</div>
+      <div class="pperiod" data-ar="/ شهرياً" data-en="/ month">/ شهرياً</div>
+      <div class="pdiv"></div>
+      <ul class="pfeats">
+        <li><span class="pfc">✓</span><span data-ar="صفقات غير محدودة" data-en="Unlimited trades">صفقات غير محدودة</span></li>
+        <li><span class="pfc">✓</span><span data-ar="جميع المؤشرات 16+" data-en="All 16+ KPIs">جميع المؤشرات 16+</span></li>
+        <li><span class="pfc">✓</span><span data-ar="تحليل AI غير محدود" data-en="Unlimited AI analysis">تحليل AI غير محدود</span></li>
+        <li><span class="pfc">✓</span><span data-ar="مقيّم خطة التداول" data-en="Plan Evaluator">مقيّم خطة التداول</span></li>
+        <li><span class="pfc">✓</span><span data-ar="تصدير PDF و Excel" data-en="Export PDF & Excel">تصدير PDF و Excel</span></li>
+      </ul>
+      <a href="login.html#register" class="pcta pcta-in" data-ar="ابدأ Pro الآن" data-en="Start Pro Now">ابدأ Pro الآن</a>
+    </div>
+    <div class="pcard">
+      <div class="pname">Elite</div>
+      <div class="pprice"><sup>$</sup>49</div>
+      <div class="pperiod" data-ar="/ شهرياً" data-en="/ month">/ شهرياً</div>
+      <div class="pdiv"></div>
+      <ul class="pfeats">
+        <li><span class="pfc">✓</span><span data-ar="كل مميزات Pro" data-en="All Pro features">كل مميزات Pro</span></li>
+        <li><span class="pfc">✓</span><span data-ar="وصول API" data-en="API Access">وصول API</span></li>
+        <li><span class="pfc">✓</span><span data-ar="دعم أولوي مباشر" data-en="Priority live support">دعم أولوي مباشر</span></li>
+        <li><span class="pfc">✓</span><span data-ar="إضافة أعضاء الفريق" data-en="Team member access">إضافة أعضاء الفريق</span></li>
+        <li><span class="pfc">✓</span><span data-ar="تقارير مخصصة" data-en="Custom reports">تقارير مخصصة</span></li>
+      </ul>
+      <a href="login.html#register" class="pcta pcta-out" data-ar="ابدأ Elite" data-en="Start Elite">ابدأ Elite</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ TESTIMONIALS ══════════ -->
+<section class="testi-sec">
+  <div class="sec-head rv">
+    <div class="sec-tag"><span data-ar="💬 آراء المتداولين" data-en="💬 Trader Reviews">💬 آراء المتداولين</span></div>
+    <h2 class="sec-h"><span data-ar="ماذا يقولون" data-en="What They Say">ماذا يقولون</span><br><span data-ar="عن TradeFlow" data-en="About TradeFlow">عن TradeFlow</span></h2>
+  </div>
+  <div class="testi-grid rv">
+    <div class="tcard">
+      <div class="tstars">★★★★★</div>
+      <p class="ttext" data-ar="غيّر طريقة تفكيري تماماً. الذكاء الاصطناعي يوضح لي بالأرقام وين تكمن مشكلتي — شيء لم يكن ممكناً قبل TradeFlow." data-en="It completely changed my thinking. The AI shows me exactly where my problems are with real numbers — something that wasn't possible before TradeFlow.">غيّر طريقة تفكيري تماماً. الذكاء الاصطناعي يوضح لي بالأرقام وين تكمن مشكلتي — شيء لم يكن ممكناً قبل TradeFlow.</p>
+      <div class="tauthor"><div class="tav">أ</div><div><div class="tname" data-ar="أحمد السالم" data-en="Ahmed Al-Salem">أحمد السالم</div><div class="trole" data-ar="متداول فوركس — الرياض" data-en="Forex Trader — Riyadh">متداول فوركس — الرياض</div></div></div>
+    </div>
+    <div class="tcard">
+      <div class="tstars">★★★★★</div>
+      <p class="ttext" data-ar="The heatmap feature is brilliant. I discovered I always lose on Mondays and Tuesdays. After changing my schedule, my results improved dramatically." data-en="The heatmap feature is brilliant. I discovered I always lose on Mondays and Tuesdays. After changing my schedule, my results improved dramatically.">الخريطة الحرارية رائعة. اكتشفت إني دايماً أخسر أيام الإثنين والثلاثاء. بعد ما غيرت جدولي تحسنت نتائجي بشكل ملحوظ.</p>
+      <div class="tauthor"><div class="tav">J</div><div><div class="tname">James Carter</div><div class="trole" data-ar="Stocks Trader — London" data-en="Stocks Trader — London">Stocks Trader — London</div></div></div>
+    </div>
+    <div class="tcard">
+      <div class="tstars">★★★★★</div>
+      <p class="ttext" data-ar="مقيّم الخطة اليومية غيّر حياتي. الآن عندي تقييم يومي يجبرني أكون صريح مع نفسي بدل ما أبرر أخطائي." data-en="The daily plan evaluator changed my life. Now I have a daily score that forces me to be honest with myself instead of justifying my mistakes.">مقيّم الخطة اليومية غيّر حياتي. الآن عندي تقييم يومي يجبرني أكون صريح مع نفسي بدل ما أبرر أخطائي.</p>
+      <div class="tauthor"><div class="tav">س</div><div><div class="tname" data-ar="سارة المنصور" data-en="Sara Al-Mansour">سارة المنصور</div><div class="trole" data-ar="متداولة مشتقات — دبي" data-en="Derivatives Trader — Dubai">متداولة مشتقات — دبي</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CTA ══════════ -->
+<section class="cta-sec rv">
+  <div class="cta-glow"></div>
+  <div class="sec-tag" style="position:relative"><span data-ar="🚀 ابدأ الآن" data-en="🚀 Get Started">🚀 ابدأ الآن</span></div>
+  <h2 class="cta-h"><span data-ar="جاهز تصبح متداولاً" data-en="Ready to Become a">جاهز تصبح متداولاً</span><br><span class="grad" data-ar="أكثر ذكاءً؟" data-en="Smarter Trader?">أكثر ذكاءً؟</span></h2>
+  <p class="cta-sub" data-ar="انضم لآلاف المتداولين من العرب والعالم الذين يستخدمون TradeFlow Pro لتحسين أدائهم" data-en="Join thousands of traders from around the world using TradeFlow Pro to improve their performance">انضم لآلاف المتداولين من العرب والعالم الذين يستخدمون TradeFlow Pro لتحسين أدائهم</p>
+  <div class="cta-btns">
+    <a href="login.html#register" class="btn-hero" data-ar="ابدأ مجاناً — لا بطاقة مطلوبة" data-en="Start Free — No Card Required">ابدأ مجاناً — لا بطاقة مطلوبة</a>
+    <a href="login.html" class="btn-hero2" data-ar="تسجيل الدخول" data-en="Log In">تسجيل الدخول</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">
+    <div class="logo-mark" style="width:34px;height:34px;font-size:17px;border-radius:9px">📈</div>
+    <div class="logo-text" style="font-size:17px">Trade<em>Flow</em> Pro</div>
+  </div>
+  <div class="fcopy" data-ar="© 2025 TradeFlow Pro — جميع الحقوق محفوظة" data-en="© 2025 TradeFlow Pro — All rights reserved">© 2025 TradeFlow Pro — جميع الحقوق محفوظة</div>
+  <div class="flinks">
+    <a href="#" data-ar="الشروط" data-en="Terms">الشروط</a>
+    <a href="#" data-ar="الخصوصية" data-en="Privacy">الخصوصية</a>
+    <a href="#" data-ar="تواصل معنا" data-en="Contact">تواصل معنا</a>
+  </div>
+</footer>
+
+<script>
+// ════════════════ LANGUAGE SYSTEM ════════════════
+let isAr = true;
+function toggleLang(){
+  isAr = !isAr;
+  const html = document.getElementById('html');
+  html.setAttribute('lang', isAr ? 'ar' : 'en');
+  html.setAttribute('dir', isAr ? 'rtl' : 'ltr');
+  document.getElementById('langFlag').textContent = isAr ? '🇺🇸' : '🇸🇦';
+  document.getElementById('langLabel').textContent = isAr ? 'English' : 'عربي';
+  document.querySelectorAll('[data-ar]').forEach(el => {
+    el.textContent = isAr ? el.dataset.ar : el.dataset.en;
+  });
+  // update sidebar tabs direction
+  document.querySelectorAll('.stab').forEach(t => {
+    t.style.borderRight = isAr ? '' : 'none';
+    t.style.borderLeft = isAr ? '' : '3px solid transparent';
+  });
+  document.querySelectorAll('.stab.on').forEach(t => {
+    t.style.borderRightColor = isAr ? 'var(--cyan)' : '';
+    t.style.borderLeftColor = isAr ? '' : 'var(--cyan)';
+  });
+}
+
+// ════════════════ CURSOR ════════════════
+const cur=document.getElementById('cur'), curR=document.getElementById('curR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function ac(){
+  cur.style.cssText+=`;left:${mx-5}px;top:${my-5}px`;
+  rx+=(mx-rx)*.1;ry+=(my-ry)*.1;
+  curR.style.cssText+=`;left:${rx-18}px;top:${ry-18}px`;
+  requestAnimationFrame(ac);
+})();
+document.querySelectorAll('a,button,[onclick],.stab,.vchip,.play-ring').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.classList.add('h');curR.classList.add('h');});
+  el.addEventListener('mouseleave',()=>{cur.classList.remove('h');curR.classList.remove('h');});
+});
+
+// ════════════════ NAV ════════════════
+const navEl=document.getElementById('nav');
+window.addEventListener('scroll',()=>navEl.classList.toggle('up',scrollY>40));
+
+// ════════════════ TICKER ════════════════
+const tpairs=[
+  {s:'XAUUSD',p:'2,345.80',c:'+12.40',u:1},{s:'EURUSD',p:'1.0892',c:'-0.0021',u:0},
+  {s:'GBPUSD',p:'1.2734',c:'+0.0045',u:1},{s:'USDJPY',p:'149.82',c:'+0.34',u:1},
+  {s:'NASDAQ',p:'17,842',c:'+142',u:1},{s:'SP500',p:'5,024',c:'-18',u:0},
+  {s:'BTCUSD',p:'67,420',c:'+820',u:1},{s:'CRUDE',p:'78.42',c:'+0.92',u:1},
+  {s:'USDCHF',p:'0.9041',c:'-0.0012',u:0},{s:'AUDUSD',p:'0.6589',c:'+0.0034',u:1},
+];
+document.getElementById('tickEl').innerHTML=[...tpairs,...tpairs].map(p=>`<div class="tick-item"><span class="tick-sym">${p.s}</span><span class="tick-p">${p.p}</span><span class="${p.u?'tick-up':'tick-dn'}">${p.u?'▲':'▼'} ${p.c}</span></div>`).join('');
+
+// ════════════════ HERO CANVAS (particle network) ════════════════
+const hc=document.getElementById('heroCanvas'),hx=hc.getContext('2d');
+function rH(){hc.width=hc.offsetWidth;hc.height=hc.offsetHeight;}
+rH();window.addEventListener('resize',rH);
+const pts=Array.from({length:55},()=>({x:Math.random(),y:Math.random(),vx:(Math.random()-.5)*.00028,vy:(Math.random()-.5)*.00028,r:Math.random()*1.3+.3,a:Math.random()}));
+(function dH(){
+  const W=hc.width,H=hc.height;hx.clearRect(0,0,W,H);
+  pts.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0)p.x=1;if(p.x>1)p.x=0;if(p.y<0)p.y=1;if(p.y>1)p.y=0;
+    hx.beginPath();hx.arc(p.x*W,p.y*H,p.r,0,Math.PI*2);
+    hx.fillStyle=`rgba(0,240,255,${p.a*.3})`;hx.fill();
+  });
+  pts.forEach((a,i)=>pts.slice(i+1).forEach(b=>{
+    const dx=(a.x-b.x)*W,dy=(a.y-b.y)*H,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<105){hx.beginPath();hx.moveTo(a.x*W,a.y*H);hx.lineTo(b.x*W,b.y*H);
+      hx.strokeStyle=`rgba(0,240,255,${(1-d/105)*.065})`;hx.lineWidth=.5;hx.stroke();}
+  }));
+  requestAnimationFrame(dH);
+})();
+
+// ════════════════ VIDEO CANVAS (animated chart) ════════════════
+const vc=document.getElementById('vidCanvas'),vx2=vc.getContext('2d');
+function rV(){vc.width=vc.offsetWidth||880;vc.height=vc.offsetHeight||495;}
+rV();window.addEventListener('resize',rV);
+let vt=0;
+(function dV(){
+  const W=vc.width,H=vc.height;vx2.clearRect(0,0,W,H);vt+=.007;
+  // Grid
+  vx2.strokeStyle='rgba(0,240,255,.04)';vx2.lineWidth=1;
+  for(let y=50;y<H;y+=60){vx2.beginPath();vx2.moveTo(0,y);vx2.lineTo(W,y);vx2.stroke();}
+  for(let x=80;x<W;x+=80){vx2.beginPath();vx2.moveTo(x,0);vx2.lineTo(x,H);vx2.stroke();}
+  // Equity line
+  vx2.beginPath();
+  for(let x=0;x<=W;x+=2){
+    const t=x/W,y=H*.5-Math.sin(t*7+vt)*H*.11-Math.sin(t*2.8+vt*.6)*H*.09+t*(-H*.28)+H*.1;
+    x===0?vx2.moveTo(x,y):vx2.lineTo(x,y);
+  }
+  vx2.strokeStyle='rgba(0,240,255,.55)';vx2.lineWidth=2.5;vx2.stroke();
+  // Second line
+  vx2.beginPath();
+  for(let x=0;x<=W;x+=2){
+    const t=x/W,y=H*.6-Math.sin(t*4+vt*1.1)*H*.07-Math.sin(t*1.8+vt*.4)*H*.05;
+    x===0?vx2.moveTo(x,y):vx2.lineTo(x,y);
+  }
+  vx2.strokeStyle='rgba(124,58,237,.35)';vx2.lineWidth=1.5;vx2.stroke();
+  // Candles
+  const candleData=[.2,.35,.55,.7,.85];
+  candleData.forEach(xp=>{
+    const t=xp,baseY=H*.5-Math.sin(t*7+vt)*H*.11-Math.sin(t*2.8+vt*.6)*H*.09+t*(-H*.28)+H*.1;
+    const isUp=Math.sin(t*13+vt)>0;
+    const c=isUp?'rgba(6,214,160,.6)':'rgba(255,59,92,.6)';
+    const h=14+Math.abs(Math.sin(t*20+vt))*10;
+    vx2.fillStyle=c;vx2.fillRect(xp*W-3,baseY-h/2,6,h);
+  });
+  requestAnimationFrame(dV);
+})();
+
+// ════════════════ SLIDES ════════════════
+let cs=0,st=null;
+const SDUR=5000;
+const tabs=document.querySelectorAll('.stab');
+const panels=document.querySelectorAll('.spanel');
+function goSlide(idx){
+  tabs[cs].classList.remove('on');panels[cs].classList.remove('on');
+  cs=idx;tabs[cs].classList.add('on');panels[cs].classList.add('on');
+  rTimer();
+}
+function rTimer(){
+  clearInterval(st);
+  tabs.forEach(t=>{const b=t.querySelector('.stab-bar');b.style.animation='none';b.style.width='0';setTimeout(()=>b.style.animation='',20);});
+  st=setInterval(()=>goSlide((cs+1)%tabs.length),SDUR);
+}
+document.querySelector('.slides-shell').addEventListener('mouseenter',()=>clearInterval(st));
+document.querySelector('.slides-shell').addEventListener('mouseleave',rTimer);
+rTimer();
+
+// ════════════════ HEATMAP ════════════════
+const hmData=[null,null,0,1,2,-1,null,-2,1,3,-1,2,1,null,1,-1,2,3,-2,1,null,2,1,-1,2,1,3,null,-1,2,1,3,-2,1,null];
+const hmGrid=document.getElementById('hmGrid');
+hmData.forEach(v=>{
+  const c=document.createElement('div');c.className='hm-cell';
+  if(v===null)c.style.cssText='background:transparent';
+  else if(v===0)c.style.background='rgba(255,255,255,.05)';
+  else if(v>0){const i=Math.min(v/3,1);c.style.background=`rgba(6,214,160,${.2+i*.7})`;}
+  else{const i=Math.min(Math.abs(v)/3,1);c.style.background=`rgba(255,59,92,${.2+i*.7})`;}
+  hmGrid.appendChild(c);
+});
+
+// ════════════════ COUNTERS ════════════════
+document.querySelectorAll('[data-target]').forEach(el=>{
+  new IntersectionObserver(ent=>{
+    if(ent[0].isIntersecting){
+      const T=+el.dataset.target,D=2200,s=Date.now();
+      (function t(){const p=Math.min((Date.now()-s)/D,1),e=1-Math.pow(1-p,4);
+        el.textContent=Math.round(e*T).toLocaleString();if(p<1)requestAnimationFrame(t);else el.textContent=T.toLocaleString();}
+      )();
+    }
+  },{threshold:.5}).observe(el);
+});
+
+// ════════════════ SCROLL REVEAL ════════════════
+new IntersectionObserver(ent=>{ent.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');});},{threshold:.08})
+  .observe(...[]);
+document.querySelectorAll('.rv').forEach(el=>{
+  new IntersectionObserver(e=>{if(e[0].isIntersecting)el.classList.add('vis');},{threshold:.08}).observe(el);
+});
+
+// ════════════════ VIDEO MODAL ════════════════
+function openVid(){document.getElementById('vmod').classList.add('open');document.body.style.overflow='hidden';}
+function closeVid(e){if(!e||e.target===document.getElementById('vmod')){document.getElementById('vmod').classList.remove('open');document.body.style.overflow='';}}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeVid();});
+
+// ════════════════ SMOOTH SCROLL ════════════════
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'});}});
+});
+</script>
+</body>
+</html>

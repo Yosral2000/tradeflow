@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تسجيل الدخول — TradeFlow Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#04080f; --bg2:#080e1a; --bg3:#0c1525;
+  --border:#152035; --border2:#1e3050;
+  --accent:#00d4ff; --accent2:#7c3aed;
+  --green:#10b981; --red:#f43f5e;
+  --text:#e2f0ff; --muted:#4a6080;
+  --mono:'JetBrains Mono',monospace; --sans:'Cairo',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;display:flex;align-items:stretch;}
+
+.left-panel {
+  flex:1;
+  background: linear-gradient(145deg, var(--bg2), var(--bg3));
+  border-left: 1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:60px;
+  position:relative;
+  overflow:hidden;
+}
+.left-panel::before {
+  content:'';
+  position:absolute;
+  top:-100px; right:-100px;
+  width:400px;height:400px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+  pointer-events:none;
+}
+.left-panel::after {
+  content:'';
+  position:absolute;
+  bottom:-100px;left:-100px;
+  width:300px;height:300px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%);
+  pointer-events:none;
+}
+.lp-logo {
+  display:flex;align-items:center;gap:12px;
+  text-decoration:none;
+  margin-bottom:60px;
+  position:relative;
+  z-index:1;
+}
+.logo-mark {
+  width:44px;height:44px;border-radius:12px;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+  box-shadow:0 0 20px rgba(0,212,255,0.3);
+}
+.lp-logo h1{font-size:22px;font-weight:900;color:var(--text);}
+.lp-logo span{color:var(--accent);}
+.lp-title{font-size:clamp(28px,3vw,40px);font-weight:900;line-height:1.15;margin-bottom:16px;position:relative;z-index:1;}
+.lp-title span{color:var(--accent);}
+.lp-sub{color:var(--muted);font-size:15px;line-height:1.7;margin-bottom:48px;font-weight:400;position:relative;z-index:1;}
+.lp-feat{display:flex;flex-direction:column;gap:16px;position:relative;z-index:1;}
+.lp-feat-item{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:14px 18px;}
+.lp-feat-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.lp-feat-icon.a{background:rgba(0,212,255,0.1);}
+.lp-feat-icon.b{background:rgba(124,58,237,0.1);}
+.lp-feat-icon.c{background:rgba(16,185,129,0.1);}
+.lp-feat-text h4{font-size:14px;font-weight:700;margin-bottom:3px;}
+.lp-feat-text p{font-size:12px;color:var(--muted);}
+
+.right-panel {
+  width:480px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:60px 48px;
+  background:var(--bg);
+}
+.auth-card{width:100%;max-width:380px;}
+.auth-tabs {
+  display:flex;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:4px;
+  margin-bottom:32px;
+}
+.tab-btn {
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:9px;
+  background:transparent;
+  color:var(--muted);
+  font-family:var(--sans);
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.tab-btn.active {
+  background:var(--bg2);
+  color:var(--text);
+  box-shadow:0 2px 8px rgba(0,0,0,0.4);
+}
+.auth-form{display:flex;flex-direction:column;gap:18px;}
+.form-group{display:flex;flex-direction:column;gap:7px;}
+.form-label{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:0.5px;}
+.form-input {
+  background:var(--bg2);
+  border:1px solid var(--border2);
+  color:var(--text);
+  border-radius:10px;
+  padding:13px 16px;
+  font-family:var(--sans);
+  font-size:14px;
+  outline:none;
+  transition:border-color 0.2s, box-shadow 0.2s;
+  width:100%;
+}
+.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,212,255,0.1);}
+.form-input::placeholder{color:var(--muted);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.btn-auth {
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(135deg, var(--accent), #0099cc);
+  color:#04080f;
+  font-family:var(--sans);
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+  transition:all 0.2s;
+  margin-top:6px;
+  box-shadow:0 4px 16px rgba(0,212,255,0.3);
+}
+.btn-auth:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,212,255,0.45);}
+.form-divider {
+  display:flex;align-items:center;gap:12px;
+  color:var(--muted);font-size:12px;
+  margin:4px 0;
+}
+.form-divider::before,.form-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.form-link{color:var(--accent);text-decoration:none;font-size:13px;font-weight:600;}
+.form-link:hover{text-decoration:underline;}
+.auth-footer{text-align:center;font-size:13px;color:var(--muted);margin-top:24px;}
+.error-msg {
+  background:rgba(244,63,94,0.08);
+  border:1px solid rgba(244,63,94,0.25);
+  color:var(--red);
+  border-radius:8px;
+  padding:10px 14px;
+  font-size:13px;
+  display:none;
+}
+.success-msg {
+  background:rgba(16,185,129,0.08);
+  border:1px solid rgba(16,185,129,0.25);
+  color:var(--green);
+  border-radius:8px;
+  padding:10px 14px;
+  font-size:13px;
+  display:none;
+}
+.plan-selector {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.plan-opt {
+  border:1px solid var(--border2);
+  border-radius:10px;
+  padding:12px 10px;
+  text-align:center;
+  cursor:pointer;
+  transition:all 0.2s;
+  background:var(--bg2);
+}
+.plan-opt:hover,.plan-opt.selected{border-color:var(--accent);background:rgba(0,212,255,0.05);}
+.plan-opt-name{font-size:13px;font-weight:700;margin-bottom:4px;}
+.plan-opt-price{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--accent);}
+
+@media(max-width:900px){
+  .left-panel{display:none;}
+  .right-panel{width:100%;padding:40px 24px;}
+}
+</style>
+</head>
+<body>
+
+<div class="left-panel">
+  <a href="index.html" class="lp-logo">
+    <div class="logo-mark">📈</div>
+    <h1>Trade<span>Flow</span> Pro</h1>
+  </a>
+  <h2 class="lp-title">ارتقِ بمستواك<br><span>كمتداول محترف</span></h2>
+  <p class="lp-sub">انضم إلى آلاف المتداولين الذين يستخدمون TradeFlow Pro لتتبع وتحليل وتحسين أدائهم يومياً.</p>
+  <div class="lp-feat">
+    <div class="lp-feat-item">
+      <div class="lp-feat-icon a">📊</div>
+      <div class="lp-feat-text">
+        <h4>تحليل احترافي شامل</h4>
+        <p>16+ مؤشر أداء لقياس تقدمك بدقة</p>
+      </div>
+    </div>
+    <div class="lp-feat-item">
+      <div class="lp-feat-icon b">🤖</div>
+      <div class="lp-feat-text">
+        <h4>ذكاء اصطناعي متقدم</h4>
+        <p>تحليل فوري لصفقاتك وتوصيات تحسين</p>
+      </div>
+    </div>
+    <div class="lp-feat-item">
+      <div class="lp-feat-icon c">🎯</div>
+      <div class="lp-feat-text">
+        <h4>مقيّم الانضباط</h4>
+        <p>تابع التزامك بخطة التداول يومياً</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="right-panel">
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button class="tab-btn active" onclick="showTab('login')">تسجيل الدخول</button>
+      <button class="tab-btn" onclick="showTab('register')">إنشاء حساب</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="loginTab">
+      <div class="auth-form">
+        <div class="error-msg" id="loginError"></div>
+        <div class="form-group">
+          <label class="form-label">البريد الإلكتروني</label>
+          <input class="form-input" type="email" id="loginEmail" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">كلمة المرور</label>
+          <input class="form-input" type="password" id="loginPass" placeholder="••••••••">
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:-6px">
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer">
+            <input type="checkbox" style="accent-color:var(--accent)"> تذكرني
+          </label>
+          <a href="#" class="form-link">نسيت كلمة المرور؟</a>
+        </div>
+        <button class="btn-auth" onclick="doLogin()">🔐 تسجيل الدخول</button>
+        <div class="form-divider">أو</div>
+        <div class="auth-footer">
+          ليس لديك حساب؟ <a href="#" class="form-link" onclick="showTab('register')">أنشئ حساباً مجانياً</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="registerTab" style="display:none">
+      <div class="auth-form">
+        <div class="error-msg" id="regError"></div>
+        <div class="success-msg" id="regSuccess"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">الاسم الأول</label>
+            <input class="form-input" id="regFirst" placeholder="أحمد">
+          </div>
+          <div class="form-group">
+            <label class="form-label">اسم العائلة</label>
+            <input class="form-input" id="regLast" placeholder="محمد">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">البريد الإلكتروني</label>
+          <input class="form-input" type="email" id="regEmail" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">كلمة المرور</label>
+          <input class="form-input" type="password" id="regPass" placeholder="8 أحرف على الأقل">
+        </div>
+        <div class="form-group">
+          <label class="form-label">اختر خطتك</label>
+          <div class="plan-selector">
+            <div class="plan-opt selected" onclick="selectPlan(this,'free')">
+              <div class="plan-opt-name">مجاني</div>
+              <div class="plan-opt-price">$0</div>
+            </div>
+            <div class="plan-opt" onclick="selectPlan(this,'pro')">
+              <div class="plan-opt-name">Pro ⭐</div>
+              <div class="plan-opt-price">$19</div>
+            </div>
+            <div class="plan-opt" onclick="selectPlan(this,'elite')">
+              <div class="plan-opt-name">Elite</div>
+              <div class="plan-opt-price">$49</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-auth" onclick="doRegister()">🚀 إنشاء الحساب</button>
+        <div class="auth-footer">
+          لديك حساب بالفعل؟ <a href="#" class="form-link" onclick="showTab('login')">سجّل الدخول</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Demo users stored in localStorage
+let selectedPlan = 'free';
+
+function showTab(tab) {
+  document.getElementById('loginTab').style.display = tab==='login'?'':'none';
+  document.getElementById('registerTab').style.display = tab==='register'?'':'none';
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='register')));
+  // If URL has #register, open register tab
+  if(tab==='register') history.replaceState(null,'','#register');
+  else history.replaceState(null,'','login.html');
+}
+
+function selectPlan(el, plan) {
+  selectedPlan = plan;
+  document.querySelectorAll('.plan-opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginError');
+  err.style.display = 'none';
+
+  if(!email||!pass){err.textContent='يرجى ملء جميع الحقول';err.style.display='block';return;}
+
+  // Check admin
+  const adminPwd = localStorage.getItem('tf_admin_pwd') || 'Yosral@1043';
+  if(email==='agenctera2024@gmail.com' && pass===adminPwd){
+    localStorage.setItem('tf_user',JSON.stringify({name:'Admin',email,role:'admin',plan:'elite'}));
+    window.location.href='admin.html';
+    return;
+  }
+
+  // Check registered users
+  const users = JSON.parse(localStorage.getItem('tf_users')||'[]');
+  const user = users.find(u=>u.email===email && u.pass===pass);
+  if(user){
+    localStorage.setItem('tf_user',JSON.stringify({...user,role:'user'}));
+    window.location.href='dashboard.html';
+  } else {
+    err.textContent='البريد الإلكتروني أو كلمة المرور غير صحيحة';
+    err.style.display='block';
+  }
+}
+
+function doRegister() {
+  const first=document.getElementById('regFirst').value.trim();
+  const last=document.getElementById('regLast').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const pass=document.getElementById('regPass').value;
+  const err=document.getElementById('regError');
+  const ok=document.getElementById('regSuccess');
+  err.style.display='none'; ok.style.display='none';
+
+  if(!first||!last||!email||!pass){err.textContent='يرجى ملء جميع الحقول';err.style.display='block';return;}
+  if(pass.length<8){err.textContent='كلمة المرور يجب أن تكون 8 أحرف على الأقل';err.style.display='block';return;}
+
+  const users=JSON.parse(localStorage.getItem('tf_users')||'[]');
+  if(users.find(u=>u.email===email)){err.textContent='هذا البريد الإلكتروني مسجّل بالفعل';err.style.display='block';return;}
+
+  const newUser={id:Date.now(),name:first+' '+last,email,pass,plan:selectedPlan,joinDate:new Date().toISOString(),trades:[]};
+  users.push(newUser);
+  localStorage.setItem('tf_users',JSON.stringify(users));
+  localStorage.setItem('tf_user',JSON.stringify({...newUser,role:'user'}));
+
+  ok.textContent='✅ تم إنشاء حسابك بنجاح! جارٍ التحويل...';
+  ok.style.display='block';
+  setTimeout(()=>window.location.href='dashboard.html',1500);
+}
+
+// Handle URL hash
+if(location.hash==='#register') showTab('register');
+
+// Enter key
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    if(document.getElementById('loginTab').style.display!=='none') doLogin();
+    else doRegister();
+  }
+});
+</script>
+</body>
+</html>
